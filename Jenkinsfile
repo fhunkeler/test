@@ -4,7 +4,7 @@ pipeline {
     stage('Env') {
       steps {
         withCredentials([
-          usernamePassword( usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')
+          usernamePassword( usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN', credentialsId: 'c66cf441d9cdab474ae58f0ff74a00dd015b7e01')
         ]) {
           script {
             sh "printenv"
