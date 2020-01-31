@@ -16,7 +16,8 @@ pipeline {
     stage('SCM - Till Plugin get matured enough') {
       steps {
         withCredentials([
-          usernamePassword( usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN', credentialsId: 'my-github-token-from-vault')
+          //usernamePassword( usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN', credentialsId: 'my-github-token-from-vault')
+          usernamePassword( usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')
         ]) {
           script {
             sh "rm -rf * .git .gitignore"
