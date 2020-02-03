@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             agent {
-                label 'fhunkeler'
+                label 'master'
             }
             steps {
                 withCredentials([
