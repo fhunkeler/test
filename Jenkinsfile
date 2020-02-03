@@ -18,10 +18,9 @@ pipeline {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    sh "env"
-                    // sh "git init"
-                    // sh "git fetch master"
-                    // sh "git checkout -f master"
+                    sh "git init"
+                    sh "git fetch https://github.com/fhunkeler/test"
+                    sh "git checkout -f master"
                 }
             }
         }
