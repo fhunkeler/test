@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-    "ci" : "node ci.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ci": "node ci.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/fhunkeler/test/issues"
   },
-  "homepage": "https://github.com/fhunkeler/test#readme"
+  "homepage": "https://github.com/fhunkeler/test#readme",
+  "dependencies": {
+    "@octokit/rest": "^16.43.0"
+  }
 }
