@@ -38,7 +38,6 @@ pipeline {
             steps {
                 sh 'ls -lrta'
                 sh 'env'
-                sh 'which node'
             }
         }
 
