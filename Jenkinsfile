@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     options {
         skipDefaultCheckout true
@@ -13,9 +13,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent {
+            /* agent {
                 label 'master'
-            }
+            } */
             steps {
              checkout([
                 $class: 'GitSCM',
@@ -32,9 +32,9 @@ pipeline {
         }
 
         stage('LS') {
-            agent {
+            /* agent {
                 label 'master'
-            }
+            } */
             steps {
                 sh 'ls -lrta'
                 sh 'env'
@@ -42,22 +42,28 @@ pipeline {
         }
 
         stage('Merge all') {
-            agent {
+            /* agent {
                 label 'master'
-            }
-            /* tools {
-                nodejs "node-12"
             } */
+            tools {
+                nodejs "node-12"
+            }
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    nodejs(nodeJSInstallationName: 'node-12') {
+                    sh '''
+                        env
+                        type node
+                        npm install
+                        npm run ci
+                    '''
+                    /* nodejs(nodeJSInstallationName: 'node-12') {
                         sh 'env'
                         sh 'which node'
                         sh 'npm install'
                         sh 'npm run ci'
-                    }
+                    } */
                 }
             }
         }
