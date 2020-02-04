@@ -41,11 +41,13 @@ pipeline {
         }
 
         stage('Merge all') {
-            withCredentials([
-                usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
-            ]) {
-                sh 'npm install'
-                sh 'npm run ci'
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
+                ]) {
+                    sh 'npm install'
+                    sh 'npm run ci'
+                }
             }
         }
     }
