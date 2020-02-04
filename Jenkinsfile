@@ -13,9 +13,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            /* agent {
+            agent {
                 label 'master'
-            } */
+            }
             steps {
              checkout([
                 $class: 'GitSCM',
