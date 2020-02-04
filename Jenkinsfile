@@ -41,6 +41,9 @@ pipeline {
         }
 
         stage('Merge all') {
+            agent {
+                label 'node'
+            }
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
