@@ -7,6 +7,8 @@ pipeline {
 
     parameters {
         string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform')
+        string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label exist')
+        string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist')
     }
 
     stages {
@@ -27,15 +29,6 @@ pipeline {
                 ]]
              ])
             }
-            /* steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
-                ]) {
-                    sh "git init"
-                    sh "git fetch https://github.com/fhunkeler/test"
-                    sh "git checkout master"
-                }
-            } */
         }
 
         stage('LS') {
@@ -44,6 +37,15 @@ pipeline {
             }
             steps {
                 sh 'ls -lrta'
+            }
+        }
+
+        stage('Merge all') {
+            withCredentials([
+                usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
+            ]) {
+                sh 'npm install'
+                sh 'npm run ci'
             }
         }
     }
