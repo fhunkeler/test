@@ -46,7 +46,7 @@ pipeline {
                 label 'master'
             } */
             tools {
-                nodejs "node12"
+                nodejs "node_10"
             }
             steps {
                 withCredentials([
