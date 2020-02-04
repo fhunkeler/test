@@ -41,17 +41,14 @@ pipeline {
         }
 
         stage('Merge all') {
-            agent {
-                node {
-                    label 'node'
-                }
-            }
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    sh 'npm install'
-                    sh 'npm run ci'
+                    nodejs(nodeJSInstallationName: 'lts') {
+                        sh 'npm install'
+                        sh 'npm run ci'
+                    }
                 }
             }
         }
