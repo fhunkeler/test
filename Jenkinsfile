@@ -55,8 +55,9 @@ pipeline {
                     sh '''
                         env
                         type npm
-                        npm install
-                        npm run ci
+                        pwd
+                        #npm install
+                        #npm run ci
                     '''
                     /* nodejs(nodeJSInstallationName: 'node-12') {
                         sh 'env'
