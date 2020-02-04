@@ -46,7 +46,7 @@ pipeline {
                 label 'master'
             } */
             tools {
-                nodejs "node-12"
+                nodejs "node12"
             }
             steps {
                 withCredentials([
@@ -54,7 +54,7 @@ pipeline {
                 ]) {
                     sh '''
                         env
-                        type node
+                        type npm
                         npm install
                         npm run ci
                     '''
