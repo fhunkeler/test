@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-alpine'
-            args '-p 3000:3000'
-        }
-    }
+    agent none
 
     options {
         skipDefaultCheckout true
@@ -46,6 +41,11 @@ pipeline {
         }
 
         stage('Merge all') {
+            agent {
+                node {
+                    label: 'node-12'
+                }
+            }
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
