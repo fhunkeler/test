@@ -44,14 +44,14 @@ pipeline {
             agent {
                 label 'master'
             }
-            tools {
+            /* tools {
                 nodejs "node-12"
-            }
+            } */
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    nodejs(nodeJSInstallationName: 'lts') {
+                    nodejs(nodeJSInstallationName: 'node-12') {
                         sh 'npm install'
                         sh 'npm run ci'
                     }
