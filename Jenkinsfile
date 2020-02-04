@@ -1,5 +1,9 @@
 pipeline {
-    agent none
+    agent {
+        docker {
+            image 'node:lts-alpine'
+        }
+    }
 
     options {
         skipDefaultCheckout true
@@ -13,9 +17,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent {
+            /* agent {
                 label 'master'
-            }
+            } */
             steps {
              checkout([
                 $class: 'GitSCM',
