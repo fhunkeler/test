@@ -43,5 +43,11 @@ pipeline {
                 }
             }
         }
+
+        stage('Env') {
+            steps {
+                sh 'env'
+            }
+        }
     }
 }
