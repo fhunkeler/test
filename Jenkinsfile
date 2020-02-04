@@ -37,6 +37,8 @@ pipeline {
             }
             steps {
                 sh 'ls -lrta'
+                sh 'env'
+                sh 'which node'
             }
         }
 
@@ -44,17 +46,19 @@ pipeline {
             agent {
                 label 'master'
             }
-            tools {
+            /* tools {
                 nodejs "node-12"
-            }
+            } */
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    // nodejs(nodeJSInstallationName: 'node-12') {
+                    nodejs(nodeJSInstallationName: 'node-12') {
+                        sh 'env'
+                        sh 'which node'
                         sh 'npm install'
                         sh 'npm run ci'
-                    // }
+                    }
                 }
             }
         }
