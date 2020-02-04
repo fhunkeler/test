@@ -42,7 +42,9 @@ pipeline {
 
         stage('Merge all') {
             agent {
-                label 'node'
+                node {
+                    label 'node'
+                }
             }
             steps {
                 withCredentials([
