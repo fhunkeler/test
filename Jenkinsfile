@@ -42,9 +42,10 @@ pipeline {
 
         stage('Merge all') {
             agent {
-                node {
-                    label: 'node-12'
-                }
+                label 'master'
+            }
+            tools {
+                nodejs "node-12"
             }
             steps {
                 withCredentials([
