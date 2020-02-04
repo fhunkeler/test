@@ -6,16 +6,13 @@ pipeline {
     }
 
     parameters {
-        string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform')
-        string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label exist')
-        string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist')
+        string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform, comma separated list')
+        string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label exist, comma separated list')
+        string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist, comma separated list')
     }
 
     stages {
         stage('Checkout') {
-            /* agent {
-                label 'master'
-            } */
             steps {
              checkout([
                 $class: 'GitSCM',
@@ -31,20 +28,7 @@ pipeline {
             }
         }
 
-        stage('LS') {
-            /* agent {
-                label 'master'
-            } */
-            steps {
-                sh 'ls -lrta'
-                sh 'env'
-            }
-        }
-
         stage('Merge all') {
-            /* agent {
-                label 'master'
-            } */
             tools {
                 nodejs "node_lts"
             }
@@ -53,18 +37,9 @@ pipeline {
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
                     sh '''
-                        env
-                        type npm
-                        pwd
                         npm install
                         npm run ci
                     '''
-                    /* nodejs(nodeJSInstallationName: 'node-12') {
-                        sh 'env'
-                        sh 'which node'
-                        sh 'npm install'
-                        sh 'npm run ci'
-                    } */
                 }
             }
         }
