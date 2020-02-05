@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/fhunkeler/test#readme",
   "dependencies": {
-    "@octokit/rest": "^16.43.0"
+    "@octokit/rest": "^16.43.0",
+    "nodegit": "^0.26.4"
   }
 }

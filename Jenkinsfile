@@ -1,19 +1,19 @@
 pipeline {
-    agent none
+    agent any
 
     options {
         skipDefaultCheckout true
     }
 
     parameters {
-        string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform')
+        string(name: 'OWNER', defaultValue: 'fhunkeler', description: 'Github repository owner')
+        string(name: 'REPOSITORY', defaultValue: 'Dialler_backend', description: 'Github repository name')
+        string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform, comma separated list')
+        string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist, comma separated list')
     }
 
     stages {
         stage('Checkout') {
-            agent {
-                label 'master'
-            }
             steps {
              checkout([
                 $class: 'GitSCM',
@@ -27,23 +27,27 @@ pipeline {
                 ]]
              ])
             }
-            /* steps {
+        }
+
+        stage('Merge all') {
+            tools {
+                nodejs "node_lts"
+            }
+            steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
-                    sh "git init"
-                    sh "git fetch https://github.com/fhunkeler/test"
-                    sh "git checkout master"
+                    sh '''
+                        npm install
+                        npm run ci
+                    '''
                 }
-            } */
+            }
         }
 
-        stage('LS') {
-            agent {
-                label 'master'
-            }
+        stage('Env') {
             steps {
-                sh 'ls -lrta'
+                sh 'env'
             }
         }
     }
