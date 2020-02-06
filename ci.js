@@ -16,8 +16,8 @@ const octokit = new Octokit({
 });
 
 const filterPR = (key) => {
-  const labelExist = process.env.LABEL_EXIST.split(',').map(elm => elm.trim());
-  const labelNotExist = process.env.LABEL_NOT_EXIST.split(',').map(elm => elm.trim());
+  const labelExist = (process.env.LABEL_EXIST || []).split(',').map(elm => elm.trim());
+  const labelNotExist = (process.env.LABEL_NOT_EXIST || []).split(',').map(elm => elm.trim());
   return key.labels.some(label => labelExist.includes(label.name))
     || key.labels.some(label => labelNotExist.includes(label.name))
     || key.labels.length === 0;

@@ -7,9 +7,10 @@ pipeline {
 
     parameters {
         string(name: 'OWNER', defaultValue: 'fhunkeler', description: 'Github repository owner')
-        string(name: 'REPOSITORY', defaultValue: 'Dialler_backend', description: 'Github repository name')
+        string(name: 'REPOSITORY', defaultValue: 'test', description: 'Github repository name')
         string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform, comma separated list')
         string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist, comma separated list')
+        string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label do not exist, comma separated list')
     }
 
     stages {
