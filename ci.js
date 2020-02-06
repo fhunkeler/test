@@ -15,6 +15,11 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 });
 
+/**
+ * Pull request filter
+ * @param key
+ * @returns {boolean}
+ */
 const filterPR = (key) => {
   const labelExist = (process.env.LABEL_EXIST || '').split(',').map(elm => elm.trim());
   const labelNotExist = (process.env.LABEL_NOT_EXIST || '').split(',').map(elm => elm.trim());
@@ -41,18 +46,30 @@ const listPR = async () => {
   }
 };
 
+/**
+ * Merge all Pull Request
+ * @param refs
+ * @returns {Promise<void>}
+ */
 const mergePR = async (refs) => {
   try {
     console.log('------------------------------------ MERGE -------------------------------------');
     const { stdout, stderr } = await exec(`git merge -Xignore-space-change ${refs.join(' ')}`);
     console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
+    if (stderr) {
+      console.log(stderr);
+      process.exit(1);
+    }
   } catch (err) {
     console.error(err);
     process.exit(1);
   }
 };
 
+/**
+ * Display merge log
+ * @returns {Promise<void>}
+ */
 const mergeLog = async () => {
   try {
     const { stdout, stderr } = await exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20");
@@ -65,6 +82,10 @@ const mergeLog = async () => {
   }
 };
 
+/**
+ * Configure git user name and email
+ * @returns {Promise<void>}
+ */
 const gitConfig = async () => {
   try {
     const { stdout, stderr } = exec('git config set user.name "Jenkins" && git config set user.email "jenkins@odial.net"');
