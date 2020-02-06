@@ -1,5 +1,11 @@
 const { Octokit } = require('@octokit/rest');
-const Git = require('nodegit');
+const {Repository, Signature} = require('nodegit');
+const git = require('isomorphic-git');
+const fs = require('fs');
+git.plugins.set('fs', fs);
+
+const owner = process.env.OWNER || 'fhunkeler';
+const repo = process.env.REPOSITORY || 'test';
 
 process.on('unhandledRejection', (err) => {
   console.error(err);
@@ -23,8 +29,6 @@ const filterPR = (key) => {
  * @returns {Promise<Octokit.PullsListResponseItem[]>}
  */
 const listPR = async () => {
-  const owner = process.env.OWNER || 'fhunkeler';
-  const repo = process.env.REPOSITORY || 'test';
   try {
     const prList = await octokit.pulls.list({
       owner,
@@ -38,8 +42,20 @@ const listPR = async () => {
   }
 };
 
-async function run() {
-  console.log(await listPR());
-}
+const run = async () => {
+  const PR = await listPR();
+  PR.forEach(pr => {
+    console.log(`merging ${pr.head.ref}`);
+    git.merge({
+      dir: '.',
+      theirs: `origin/${pr.head.ref}`
+    }).then(merge => console.log(merge))
+      .catch(e => {
+        console.error(e);
+        process.exit(1);
+      });
+  })
+};
 
 run();
+

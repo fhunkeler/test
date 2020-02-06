@@ -19,6 +19,7 @@
   "homepage": "https://github.com/fhunkeler/test#readme",
   "dependencies": {
     "@octokit/rest": "^16.43.0",
+    "isomorphic-git": "^0.78.3",
     "nodegit": "^0.26.4"
   }
 }
