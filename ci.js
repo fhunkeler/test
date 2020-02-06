@@ -88,7 +88,7 @@ const mergeLog = async () => {
  */
 const gitConfig = async () => {
   try {
-    const { stdout, stderr } = exec('git config set user.name "Jenkins" && git config set user.email "jenkins@odial.net"');
+    const { stdout, stderr } = exec('git config user.name "Jenkins" && git config user.email "jenkins@odial.net"');
     console.log('----------------------------------- CONFIG -------------------------------------');
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
