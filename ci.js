@@ -1,6 +1,5 @@
 const { Octokit } = require('@octokit/rest');
 const { exec } = require('child_process');
-const fs = require('fs');
 
 
 const owner = process.env.OWNER || 'fhunkeler';
@@ -16,8 +15,8 @@ const octokit = new Octokit({
 });
 
 const filterPR = (key) => {
-  const labelExist = (process.env.LABEL_EXIST || []).split(',').map(elm => elm.trim());
-  const labelNotExist = (process.env.LABEL_NOT_EXIST || []).split(',').map(elm => elm.trim());
+  const labelExist = (process.env.LABEL_EXIST || '').split(',').map(elm => elm.trim());
+  const labelNotExist = (process.env.LABEL_NOT_EXIST || '').split(',').map(elm => elm.trim());
   return key.labels.some(label => labelExist.includes(label.name))
     || key.labels.some(label => labelNotExist.includes(label.name))
     || key.labels.length === 0;
@@ -64,18 +63,6 @@ const run = async () => {
       console.log(`stderr: ${stderr}`);
     }
   });
-
-  /*PR.forEach(pr => {
-    console.log(`merging ${pr.head.ref}`);
-    git.merge({
-      dir: '.',
-      theirs: `origin/${pr.head.ref}`
-    }).then(merge => console.log(merge))
-      .catch(e => {
-        console.error(e);
-        process.exit(1);
-      });
-  })*/
 };
 
 run();
