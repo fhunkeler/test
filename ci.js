@@ -1,8 +1,7 @@
 const { Octokit } = require('@octokit/rest');
-const {Repository, Signature} = require('nodegit');
-const git = require('isomorphic-git');
+const { exec } = require('child_process');
 const fs = require('fs');
-git.plugins.set('fs', fs);
+
 
 const owner = process.env.OWNER || 'fhunkeler';
 const repo = process.env.REPOSITORY || 'test';
@@ -44,7 +43,29 @@ const listPR = async () => {
 
 const run = async () => {
   const PR = await listPR();
-  PR.forEach(pr => {
+  const refs = PR.map(pr => pr.head.ref);
+  exec(`git merge -Xignore-space-change ${refs.join(' ')}`, (err, stdout, stderr) => {
+    if (err) {
+      //some err occurred
+      console.error(err)
+    } else {
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    }
+  });
+  exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20", , (err, stdout, stderr) => {
+    if (err) {
+      //some err occurred
+      console.error(err)
+    } else {
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    }
+  });
+
+  /*PR.forEach(pr => {
     console.log(`merging ${pr.head.ref}`);
     git.merge({
       dir: '.',
@@ -54,7 +75,7 @@ const run = async () => {
         console.error(e);
         process.exit(1);
       });
-  })
+  })*/
 };
 
 run();
