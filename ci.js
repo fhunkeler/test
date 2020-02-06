@@ -54,7 +54,7 @@ const run = async () => {
       console.log(`stderr: ${stderr}`);
     }
   });
-  exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20", , (err, stdout, stderr) => {
+  exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20", (err, stdout, stderr) => {
     if (err) {
       //some err occurred
       console.error(err)
