@@ -42,7 +42,7 @@ const listPR = async () => {
 
 const run = async () => {
   const PR = await listPR();
-  const refs = PR.map(pr => pr.head.ref);
+  const refs = PR.map(pr => `origin/${pr.head.ref}`);
   exec(`git merge -Xignore-space-change ${refs.join(' ')}`, (err, stdout, stderr) => {
     if (err) {
       //some err occurred
