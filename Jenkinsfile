@@ -49,6 +49,7 @@ pipeline {
         stage('Env') {
             steps {
                 sh 'env'
+                sh 'ls -rtl'
             }
         }
     }

@@ -1,5 +1,6 @@
 const { Octokit } = require('@octokit/rest');
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 
 const owner = process.env.OWNER || 'fhunkeler';
@@ -40,29 +41,52 @@ const listPR = async () => {
   }
 };
 
+const mergePR = async (refs) => {
+  try {
+    console.log('------------------------------------ MERGE -------------------------------------');
+    const { stdout, stderr } = await exec(`git merge -Xignore-space-change ${refs.join(' ')}`);
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const mergeLog = async () => {
+  try {
+    const { stdout, stderr } = await exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20");
+    console.log('------------------------------------- LOG --------------------------------------');
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const gitConfig = async () => {
+  try {
+    const { stdout, stderr } = exec('git config set user.name "Jenkins" && git config set user.email "jenkins@odial.net"');
+    console.log('----------------------------------- CONFIG -------------------------------------');
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+};
+
 const run = async () => {
   const PR = await listPR();
   const refs = PR.map(pr => `origin/${pr.head.ref}`);
-  exec(`git merge -Xignore-space-change ${refs.join(' ')}`, (err, stdout, stderr) => {
-    if (err) {
-      //some err occurred
-      console.error(err)
-    } else {
-      // the *entire* stdout and stderr (buffered)
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    }
-  });
-  exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20", (err, stdout, stderr) => {
-    if (err) {
-      //some err occurred
-      console.error(err)
-    } else {
-      // the *entire* stdout and stderr (buffered)
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    }
-  });
+  await gitConfig();
+  try {
+    await mergePR(refs);
+    await mergeLog();
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 run();
