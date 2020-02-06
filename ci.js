@@ -55,7 +55,9 @@ const mergePR = async (refs) => {
   try {
     console.log('------------------------------------ MERGE -------------------------------------');
     const { stdout, stderr } = await exec(`git merge -Xignore-space-change ${refs.join(' ')}`);
-    console.log('stdout:', stdout);
+    if (stdout) {
+      console.log( stdout);
+    }
     if (stderr) {
       console.log(stderr);
       process.exit(1);
@@ -74,8 +76,12 @@ const mergeLog = async () => {
   try {
     const { stdout, stderr } = await exec("git log --graph --pretty=format:'%h -%d %s (%cr)' --abbrev-commit --date=relative --all -n20");
     console.log('------------------------------------- LOG --------------------------------------');
-    console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
+    if (stdout) {
+      console.log(stdout);
+    }
+    if (stderr) {
+      console.log(stderr);
+    }
   } catch (err) {
     console.error(err);
     process.exit(1);
@@ -91,10 +97,10 @@ const gitConfig = async () => {
     const { stdout, stderr } = exec('git config user.name "Jenkins" && git config user.email "jenkins@odial.net"');
     console.log('----------------------------------- CONFIG -------------------------------------');
     if (stdout) {
-      console.log('stdout:', stdout);
+      console.log(stdout);
     }
     if (stderr) {
-      console.log('stderr:', stderr);
+      console.log(stderr);
     }
   } catch (e) {
     console.error(e);
@@ -115,4 +121,3 @@ const run = async () => {
 };
 
 run();
-
