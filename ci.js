@@ -90,8 +90,12 @@ const gitConfig = async () => {
   try {
     const { stdout, stderr } = exec('git config user.name "Jenkins" && git config user.email "jenkins@odial.net"');
     console.log('----------------------------------- CONFIG -------------------------------------');
-    console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
+    if (stdout) {
+      console.log('stdout:', stdout);
+    }
+    if (stderr) {
+      console.log('stderr:', stderr);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);
