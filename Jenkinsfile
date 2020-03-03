@@ -95,22 +95,39 @@ pipeline {
             }
         }
         */
-        stage('Commit') {
+        stage("Push") {
+            environment {
+                GIT_AUTH = credentials('github')
+            }
             steps {
-                 sh '''
+                sh('''
+                    git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
+                    git push origin HEAD:$TARGET_BRANCH
+                ''')
+            }
+        }
+        /* stage('Commit') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-credentials-id', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){
+                    sh('''
+                        git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
+                        git push origin HEAD:$TARGET_BRANCH
+                    ''')
+                    }
+                  *//*sh '''
                     git add .
                     git commit -m "[$BUILD_TAG]"
                     git tag -a $BUILD_TAG -m "$BUILD_TAG"
                     git push origin HEAD:ci
-                 '''
-                /* withCredentials([
+                 '''*//*
+                 *//* withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ])
                 sshagent(['github']) {
 
-                }*/
+                }*//*
             }
-        }
+        } */
     }
 
     /*post {
