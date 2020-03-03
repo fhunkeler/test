@@ -46,9 +46,7 @@ pipeline {
                     url: 'https://github.com/fhunkeler/test.git'
                 ]]
              ]) */
-             git url: "https://github.com/fhunkeler/test.git",
-                 credentialsId: 'github',
-                 branch: master
+             git credentialsId: 'github', url: 'https://github.com/fhunkeler/test.git'
             }
         }
 
