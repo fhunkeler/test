@@ -92,9 +92,9 @@ pipeline {
         */
         stage('Commit') {
             steps {
-                withCredentials([
+                /* withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
-                ]) {
+                ]) */sshagent(['github']) {
                     sh '''
                         git add .
                         git commit -m "[$BUILD_TAG]"
