@@ -31,13 +31,13 @@ pipeline {
 
         stage('Checkout') {
             steps {
-             sh '''
+             /* sh '''
                 git config --global credential.helper cache
                 git config --global push.default simple
-             '''
-             checkout([
+             ''' */
+             /* checkout([
                 $class: 'GitSCM',
-                branches: [[name: '*/master']],
+                branches: [[name: '*//* master']],
                 doGenerateSubmoduleConfigurations: false,
                 extensions: [],
                 submoduleCfg: [],
@@ -45,7 +45,10 @@ pipeline {
                     credentialsId: 'github',
                     url: 'https://github.com/fhunkeler/test.git'
                 ]]
-             ])
+             ]) */
+             git url: "https://github.com/fhunkeler/test.git",
+                 credentialsId: 'github',
+                 branch: master
             }
         }
 
