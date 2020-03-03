@@ -96,13 +96,10 @@ pipeline {
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
                 ]) {
                     sh '''
-                        env
-                        git show-ref
-                        git status
-                        #git add .
-                        #git commit -m "[$BUILD_TAG]"
-                        #git tag -a $BUILD_TAG -m "$BUILD_TAG"
-                        #git push origin master:ci
+                        git add .
+                        git commit -m "[$BUILD_TAG]"
+                        git tag -a $BUILD_TAG -m "$BUILD_TAG"
+                        git push origin HEAD:ci
                     '''
                 }
             }
