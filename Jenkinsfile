@@ -31,6 +31,10 @@ pipeline {
 
         stage('Checkout') {
             steps {
+             sh '''
+                git config --global credential.helper cache
+                git config --global push.default simple
+             '''
              checkout([
                 $class: 'GitSCM',
                 branches: [[name: '*/master']],
@@ -92,16 +96,18 @@ pipeline {
         */
         stage('Commit') {
             steps {
+                 sh '''
+                    git add .
+                    git commit -m "[$BUILD_TAG]"
+                    git tag -a $BUILD_TAG -m "$BUILD_TAG"
+                    git push origin HEAD:ci
+                 '''
                 /* withCredentials([
                     usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
-                ]) */sshagent(['github']) {
-                    sh '''
-                        git add .
-                        git commit -m "[$BUILD_TAG]"
-                        git tag -a $BUILD_TAG -m "$BUILD_TAG"
-                        git push origin HEAD:ci
-                    '''
-                }
+                ])
+                sshagent(['github']) {
+
+                }*/
             }
         }
     }
