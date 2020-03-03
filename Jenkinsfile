@@ -97,7 +97,7 @@ pipeline {
                 ]) {
                     sh '''
                         env
-                        git add -p
+                        git add .
                         git commit -m "[$BUILD_TAG]
                         git push origin master:ci
                     '''
