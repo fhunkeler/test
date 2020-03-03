@@ -91,14 +91,17 @@ const getCommit = async (prs) => {
 const mergePR = async (refs) => {
   try {
     console.log('------------------------------------ MERGE -------------------------------------');
-    const { stdout, stderr } = await exec(`git merge -Xignore-space-change ${refs.join(' ')}`);
-    if (stdout) {
-      console.log(stdout);
+    if (refs.length > 0) {
+      const { stdout, stderr } = await exec(`git merge -Xignore-space-change ${refs.join(' ')}`);
+      if (stdout) {
+        console.log(stdout);
+      }
+      if (stderr) {
+        console.log(stderr);
+        process.exit(1);
+      }
     }
-    if (stderr) {
-      console.log(stderr);
-      process.exit(1);
-    }
+    console.log('No branch to merge')
   } catch (err) {
     console.error(err);
     process.exit(1);
