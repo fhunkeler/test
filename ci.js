@@ -100,8 +100,9 @@ const mergePR = async (refs) => {
         console.log(stderr);
         process.exit(1);
       }
+    } else {
+      console.log('No branch to merge')
     }
-    console.log('No branch to merge')
   } catch (err) {
     console.error(err);
     process.exit(1);
