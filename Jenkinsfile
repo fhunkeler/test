@@ -5,15 +5,30 @@ pipeline {
         skipDefaultCheckout true
     }
 
+    environment {
+        OD_DOCKER_ORG="od-backend"
+        REGION="eu-west-0"
+        // OD_DOCKER_REGISTRY=registry.${REGION}.prod-cloud-ocb.orange-business.com
+        OD_DOCKER_REGISTRY="100.125.0.94:20202"
+        OD_FE_ACCESS_KEY="LVT3CCXO15Z60SJ4BVWL"
+    }
+
     parameters {
-        string(name: 'OWNER', defaultValue: 'fhunkeler', description: 'Github repository owner')
-        string(name: 'REPOSITORY', defaultValue: 'test', description: 'Github repository name')
+        string(name: 'OWNER', defaultValue: 'Dialler', description: 'Github repository owner')
+        string(name: 'REPOSITORY', defaultValue: 'dialler_backend', description: 'Github repository name')
         string(name: 'PLATFORM', defaultValue: 'staging', description: 'target platform, comma separated list')
         string(name: 'LABEL_NOT_EXIST', defaultValue: 'DO_NOT_INTEGRATE', description: 'Trigger build if Label do not exist, comma separated list')
-        string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label do not exist, comma separated list')
+        // string(name: 'LABEL_EXIST', defaultValue: '', description: 'Trigger build if Label do not exist, comma separated list')
     }
 
     stages {
+
+        stage('Clean') {
+            steps {
+                sh 'rm -rf ..?* .[!.]* *'
+            }
+        }
+
         stage('Checkout') {
             steps {
              checkout([
@@ -30,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('Merge all') {
+        stage('Merge') {
             tools {
                 nodejs "node_lts"
             }
@@ -45,12 +60,65 @@ pipeline {
                 }
             }
         }
-
-        stage('Env') {
+        /*
+        stage('Build') {
             steps {
-                sh 'env'
-                sh 'ls -rtl'
+                withCredentials([
+                    string( credentialsId: 'OD_FE_SECRET_KEY',  variable: 'OD_FE_SECRET_KEY')
+                ]) {
+                    sh '''
+                        OD_DOCKER_KEY=$(printf "$OD_FE_ACCESS_KEY" | openssl dgst -binary -sha256 -hmac "$OD_FE_SECRET_KEY" | od -An -vtx1 | tr -d [:space:])
+                        echo ${OD_DOCKER_KEY} | docker login -u ${REGION}@${OD_FE_ACCESS_KEY} --password-stdin ${OD_DOCKER_REGISTRY}
+
+                        IMAGE_NAME=${OD_DOCKER_REGISTRY}/${OD_DOCKER_ORG}/dialler-app
+
+                        touch .env
+                        echo 'IMAGE_NAME='$IMAGE_NAME > .env
+                        echo 'IMAGE_TAG='$BUILD_TAG >> .env
+                        echo 'PLATFORM=dev' >> .env
+                        echo 'DATA_PATH=./tmp/data' >> .env
+                        echo 'KEYS=./keys' >> .env
+                        echo 'MAILDIR=/home/devdialler/Maildir' >> .env
+
+                        docker-compose build --no-cache --pull
+                        #docker-compose push
+                        #docker image tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:staging
+                        #docker image push $IMAGE_NAME:staging
+                        #docker image rm $IMAGE_NAME:$IMAGE_TAG
+                    '''
+                }
+            }
+        }
+        */
+        stage('Commit') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')
+                ]) {
+                    sh '''
+                        env
+                        git add -p
+                        git commit -m "[$BUILD_TAG]
+                        git push origin master:ci
+                    '''
+                }
             }
         }
     }
+
+    /*post {
+        success {
+          slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+
+        failure {
+          slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        cleanup {
+            sh '''
+                docker container prune -f
+                docker image prune -f
+             '''
+        }
+    }*/
 }
