@@ -102,10 +102,11 @@ pipeline {
             steps {
                 sh('''
                     git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
+                    git checkout -b ci
                     git add .
                     git commit -m "[$BUILD_TAG]"
                     git tag -a $BUILD_TAG -m "$BUILD_TAG"
-                    git push origin HEAD:ci
+                    git push --set-upstream origin ci
                 ''')
             }
         }
