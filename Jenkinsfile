@@ -106,7 +106,7 @@ pipeline {
                     git add .
                     git commit -m "[$BUILD_TAG]"
                     git tag -a $BUILD_TAG -m "$BUILD_TAG"
-                    git push origin ci
+                    git push origin --tags
                 ''')
             }
         }
